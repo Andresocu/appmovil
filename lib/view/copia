@@ -1,0 +1,247 @@
+import 'package:flutter/material.dart';
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
+import 'package:helloworld/view/WeatherDetailScreen/WeatherDetailScreen.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
+
+class WeatherScreen extends StatefulWidget {
+  const WeatherScreen({Key? key}) : super(key: key);
+
+  @override
+  State<WeatherScreen> createState() => _WeatherScreenState();
+}
+
+class _WeatherScreenState extends State<WeatherScreen> {
+  final List<WeatherData> _weatherData = [
+    WeatherData(
+        location: 'La Carpa, Lambayeque, PER',
+        temperature: 20.9,
+        feelsLike: 21.7,
+        humidity: 80.0,
+        windSpeed: 0.9,
+        windDirection: 'SSE',
+        precipitation: 0.0,
+        name: 'EM LOTE C5'),
+    WeatherData(
+        location: 'La Carpa, Lambayeque, PER',
+        temperature: 21.4,
+        feelsLike: 22.2,
+        humidity: 80.0,
+        windSpeed: 0.4,
+        windDirection: 'S',
+        precipitation: 0.0,
+        name: 'FRUSAN AGRO'),
+    WeatherData(
+        location: 'Chiclayo, Lambayeque, PER',
+        temperature: 20.8,
+        feelsLike: 21.6,
+        humidity: 81.0,
+        windSpeed: 0.9,
+        windDirection: 'SE',
+        precipitation: 0.0,
+        name: 'EM LOTE A9'),
+    WeatherData(
+        location: 'Pacora, Lambayeque, PER',
+        temperature: 21.2,
+        feelsLike: 24.4,
+        humidity: 76.3,
+        windSpeed: 1.8,
+        windDirection: 'SW',
+        precipitation: 0.0,
+        name: 'EM LOTE NORTE'),
+    WeatherData(
+        location: 'Pacora, Lambayeque, PER',
+        temperature: 21.2,
+        feelsLike: 21.9,
+        humidity: 79.0,
+        windSpeed: 0.9,
+        windDirection: 'no va',
+        precipitation: 0.0,
+        name: 'EM LOTE SUR'),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Pantalla meteorológica'),
+      ),
+      body: ListView.builder(
+        itemCount: _weatherData.length,
+        itemBuilder: (context, index) {
+          final data = _weatherData[index];
+
+          return GestureDetector(
+            onTap: () {
+              // Navegar a la nueva pantalla con los datos
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => WeatherDetailScreen(weatherData: data),
+                ),
+              );
+            },
+            child: Container(
+              margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
+              padding: EdgeInsets.all(8.0),
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/images/fondotiempo.png'),
+                  fit: BoxFit.cover, // Ajusta la imagen al tamaño del Container
+                ),
+                borderRadius: BorderRadius.circular(15.0), // Bordes redondeados
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    blurRadius: 8.0,
+                    spreadRadius: 2.0,
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            left: 20.0), // Ajusta este valor según lo necesites
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              data.name,
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors
+                                    .white, // Cambiar color del texto si es necesario
+                              ),
+                            ),
+                            Text(
+                              data.location,
+                              style: TextStyle(
+                                color: Colors
+                                    .white, // Cambiar color del texto si es necesario
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Column(
+                        children: [
+                          Row(
+                            children: [
+                              Icon(Icons.cloud, color: Colors.white),
+                              SizedBox(width: 10),
+                              Text(
+                                '${data.temperature}°C',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors
+                                      .white, // Cambiar color del texto si es necesario
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        _buildWeatherDetailColumn(
+                            icon: LucideIcons.cloudRain,
+                            label: '24hr',
+                            value: '0.0 mm'),
+                        _buildWeatherDetailColumn(
+                            icon: Icons.thermostat,
+                            label: 'Feels',
+                            value: '${data.feelsLike}°C'),
+                        _buildWeatherDetailColumn(
+                            icon: Icons.air,
+                            label: '${data.windDirection}',
+                            value: '${data.windSpeed} m/s'),
+                        _buildWeatherDetailColumn(
+                            icon: EvaIcons.dropletOutline,
+                            label: 'Hum',
+                            value: '${data.humidity}%'),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildWeatherDetailColumn(
+      {required IconData icon, required String label, required String value}) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Icon(icon, color: Colors.white),
+            SizedBox(width: 5),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color:
+                        Colors.white, // Cambiar color del texto si es necesario
+                  ),
+                ),
+                SizedBox(height: 4),
+                Text(
+                  value,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color:
+                        Colors.white, // Cambiar color del texto si es necesario
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(width: 10),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class WeatherData {
+  final String location;
+  final double temperature;
+  final double feelsLike;
+  final double humidity;
+  final double windSpeed;
+  final String windDirection;
+  final double precipitation;
+  final String name;
+
+  WeatherData({
+    required this.location,
+    required this.temperature,
+    required this.feelsLike,
+    required this.humidity,
+    required this.windSpeed,
+    required this.windDirection,
+    required this.precipitation,
+    required this.name,
+  });
+}
